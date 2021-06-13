@@ -12,18 +12,34 @@ class Quizz extends StatefulWidget {
 class _QuizzState extends State<Quizz> {
   bool flag = false;
   String str = 'Start Quiz';
-  List<Icon>scoreKeeper=[];
 
-  Expanded ansButton(String s,Color c){
+  int quesNumber=0;
+  List<Icon>scoreKeeper=[];
+  List<String>question=[
+    'Capital of India is Kolkata',
+    'India won 2013 world cup',
+    'Covid Vaccine is very Harmful',
+    'PM of India is Narinder Modi'
+  ];
+  List<bool>answers=[
+    false,
+    false,
+    false,
+    true,
+  ];
+
+  Expanded ansButton(String s,Color c,bool res){
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10.0),
         child: TextButton(onPressed: (){
+
+          if(res==answers[quesNumber])
+            scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
+          else
+            scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
           setState(() {
-            if(s=='True')
-              scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
-            else
-              scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
+            quesNumber++;
           });
         }, child: Text('$s',style: TextStyle(color: Colors.white,fontSize: 20),),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(c)),),
       ),
@@ -42,16 +58,16 @@ class _QuizzState extends State<Quizz> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  'This is were Question text will go',
+                  question[quesNumber]+' ?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 25, color: Colors.white),
+                  style: TextStyle(fontSize: 40, color: Colors.white,fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ),
 
-            ansButton('True',Colors.red),
-            ansButton('False',Colors.green),
+            ansButton('True',Colors.red,true),
+            ansButton('False',Colors.green,false),
           Row(
             children: scoreKeeper,
           )
@@ -68,6 +84,7 @@ class _QuizzState extends State<Quizz> {
               style: TextStyle(fontSize: 30, color: Colors.white),
             ),
           ),
+
 
         ],
       );
