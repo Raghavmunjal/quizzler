@@ -32,7 +32,7 @@ class _QuizzState extends State<Quizz> {
 
           setState(() {
             if(res==qb.getQuestionAnswer()){
-              scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
+              scoreKeeper.add(Icon(Icons.check,color: Colors.green,));
 
             }else{
               scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
@@ -61,7 +61,7 @@ class _QuizzState extends State<Quizz> {
                 child: Text(
                   qb.getQuestionText()+'?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 40, color: Colors.white,fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 30, color: Colors.white,fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -92,6 +92,7 @@ class _QuizzState extends State<Quizz> {
                 thickness: 5,
                 endIndent: 40,
                 indent: 40,
+                color: Colors.white38,
               ),
             ),
 
@@ -124,9 +125,10 @@ class _QuizzState extends State<Quizz> {
                 ),
               ),
             ),
-            backgroundColor: Colors.teal.shade200,
+            backgroundColor: Colors.black,
+            shadowColor: Colors.white,
           ),
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.black,
           body: startQuiz()),
     );
   }
