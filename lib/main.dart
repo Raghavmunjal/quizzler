@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/quizBrain.dart';
+
+
+QuizBrain qb=QuizBrain();
+
 
 void main() {
   runApp(Quizz());
@@ -12,21 +17,14 @@ class Quizz extends StatefulWidget {
 class _QuizzState extends State<Quizz> {
   bool flag = false;
   String str = 'Start Quiz';
-
+  int count=0;
   int quesNumber=0;
   List<Icon>scoreKeeper=[];
-  List<String>question=[
-    'Capital of India is Kolkata',
-    'India won 2013 world cup',
-    'Covid Vaccine is very Harmful',
-    'PM of India is Narinder Modi'
-  ];
-  List<bool>answers=[
-    false,
-    false,
-    false,
-    true,
-  ];
+
+
+
+
+
 
   Expanded ansButton(String s,Color c,bool res){
     return Expanded(
@@ -34,13 +32,31 @@ class _QuizzState extends State<Quizz> {
         padding: const EdgeInsets.all(10.0),
         child: TextButton(onPressed: (){
 
-          if(res==answers[quesNumber])
-            scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
-          else
-            scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
           setState(() {
-            quesNumber++;
+
+            if(res==qb.questionBank[quesNumber].questionAnswer){
+              scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
+              count=count+1;
+            }else{
+              scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
+            }
+
+              quesNumber++;
+
+              if(quesNumber==qb.questionBank.length){
+                quesNumber=0;
+
+                flag=false;
+
+                str='Try Again';
+
+                scoreKeeper=[];
+
+              }
+
+
           });
+
         }, child: Text('$s',style: TextStyle(color: Colors.white,fontSize: 20),),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(c)),),
       ),
     );
@@ -58,7 +74,7 @@ class _QuizzState extends State<Quizz> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  question[quesNumber]+' ?',
+                  qb.questionBank[quesNumber].questionText+'?',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 40, color: Colors.white,fontWeight: FontWeight.bold),
                 ),
@@ -84,8 +100,21 @@ class _QuizzState extends State<Quizz> {
               style: TextStyle(fontSize: 30, color: Colors.white),
             ),
           ),
-
-
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Divider(
+                height: 5,
+                thickness: 5,
+                endIndent: 40,
+                indent: 40,
+              ),
+            ),
+          Center(
+            child: Text(
+              'Last Score'+' : '+'$count',
+              style: TextStyle(fontSize: 25, color: Colors.white),
+            ),
+          ),
         ],
       );
     }
@@ -103,8 +132,10 @@ class _QuizzState extends State<Quizz> {
                     flag = !flag;
                     if (flag)
                       str = 'Solve Question';
-                    else
+                    else{
                       str = 'Start Quiz';
+                    }
+
                   });
                 },
                 child: Text(
