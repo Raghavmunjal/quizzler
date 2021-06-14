@@ -17,8 +17,6 @@ class Quizz extends StatefulWidget {
 class _QuizzState extends State<Quizz> {
   bool flag = false;
   String str = 'Start Quiz';
-  int count=0;
-  int quesNumber=0;
   List<Icon>scoreKeeper=[];
 
 
@@ -33,27 +31,14 @@ class _QuizzState extends State<Quizz> {
         child: TextButton(onPressed: (){
 
           setState(() {
-
-            if(res==qb.getQuestionAnswer(quesNumber)){
+            if(res==qb.getQuestionAnswer()){
               scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
-              count=count+1;
+
             }else{
               scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
             }
 
-              quesNumber++;
-
-              if(quesNumber==qb.questionBank.length){
-                quesNumber=0;
-
-                flag=false;
-
-                str='Try Again';
-
-                scoreKeeper=[];
-
-              }
-
+            qb.nextQues();
 
           });
 
@@ -74,7 +59,7 @@ class _QuizzState extends State<Quizz> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  qb.getQuestionText(quesNumber)+'?',
+                  qb.getQuestionText()+'?',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 40, color: Colors.white,fontWeight: FontWeight.bold),
                 ),
@@ -109,12 +94,7 @@ class _QuizzState extends State<Quizz> {
                 indent: 40,
               ),
             ),
-          Center(
-            child: Text(
-              'Last Score'+' : '+'$count',
-              style: TextStyle(fontSize: 25, color: Colors.white),
-            ),
-          ),
+
         ],
       );
     }
