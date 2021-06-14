@@ -1,135 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:quizzler/quizBrain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'quizBrain.dart';
 
+QuizBrain quizBrain = QuizBrain();
 
-QuizBrain qb=QuizBrain();
+void main() => runApp(Quizzler());
 
-
-void main() {
-  runApp(Quizz());
-}
-
-class Quizz extends StatefulWidget {
-  @override
-  _QuizzState createState() => _QuizzState();
-}
-
-class _QuizzState extends State<Quizz> {
-  bool flag = false;
-  String str = 'Start Quiz';
-  List<Icon>scoreKeeper=[];
-
-
-
-
-
-
-  Expanded ansButton(String s,Color c,bool res){
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: TextButton(onPressed: (){
-
-          setState(() {
-            if(res==qb.getQuestionAnswer()){
-              scoreKeeper.add(Icon(Icons.check,color: Colors.green,));
-
-            }else{
-              scoreKeeper.add(Icon(Icons.close,color: Colors.red,));
-            }
-
-            qb.nextQues();
-
-          });
-
-        }, child: Text('$s',style: TextStyle(color: Colors.white,fontSize: 20),),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(c)),),
-      ),
-    );
-  }
-
-  Column startQuiz() {
-    if (flag) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(
-                child: Text(
-                  qb.getQuestionText()+'?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30, color: Colors.white,fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-
-            ansButton('True',Colors.red,true),
-            ansButton('False',Colors.green,false),
-          Row(
-            children: scoreKeeper,
-          )
-
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text(
-              'Press Start Quiz',
-              style: TextStyle(fontSize: 30, color: Colors.white),
-            ),
-          ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Divider(
-                height: 5,
-                thickness: 5,
-                endIndent: 40,
-                indent: 40,
-                color: Colors.white38,
-              ),
-            ),
-
-        ],
-      );
-    }
-  }
-
+class Quizzler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: Center(
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    flag = !flag;
-                    if (flag)
-                      str = 'Solve Question';
-                    else{
-                      str = 'Start Quiz';
-                    }
+        backgroundColor: Colors.grey.shade900,
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: QuizPage(),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-                  });
-                },
-                child: Text(
-                  '$str',
-                  style: TextStyle(color: Colors.white, fontSize: 30),
+class QuizPage extends StatefulWidget {
+  @override
+  _QuizPageState createState() => _QuizPageState();
+}
+
+class _QuizPageState extends State<QuizPage> {
+  List<Icon> scoreKeeper = [];
+
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = quizBrain.getCorrectAnswer();
+
+    setState(() {
+
+      if (quizBrain.isFinished() == true) {
+
+        Alert(
+          context: context,
+          title: 'Finished!',
+          desc: 'You\'ve reached the end of the quiz.',
+        ).show();
+
+
+        quizBrain.reset();
+
+
+        scoreKeeper = [];
+      }
+
+
+      else {
+        if (userPickedAnswer == correctAnswer) {
+          scoreKeeper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          scoreKeeper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
+        }
+        quizBrain.nextQuestion();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          flex: 5,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Center(
+              child: Text(
+                quizBrain.getQuestionText(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25.0,
+                  color: Colors.white,
                 ),
               ),
             ),
-            backgroundColor: Colors.black,
-            shadowColor: Colors.white,
           ),
-          backgroundColor: Colors.black,
-          body: startQuiz()),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+              child: Text(
+                'True',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              ),
+              onPressed: () {
+                //The user picked true.
+                checkAnswer(true);
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
+
+              child: Text(
+                'False',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                //The user picked false.
+                checkAnswer(false);
+              },
+            ),
+          ),
+        ),
+        Row(
+          children: scoreKeeper,
+        )
+      ],
     );
   }
 }
