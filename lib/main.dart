@@ -34,7 +34,7 @@ class _QuizzState extends State<Quizz> {
 
           setState(() {
 
-            if(res==qb.questionBank[quesNumber].questionAnswer){
+            if(res==qb.getQuestionAnswer(quesNumber)){
               scoreKeeper.add(Icon(Icons.check,color: Colors.black,));
               count=count+1;
             }else{
@@ -74,7 +74,7 @@ class _QuizzState extends State<Quizz> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                 child: Text(
-                  qb.questionBank[quesNumber].questionText+'?',
+                  qb.getQuestionText(quesNumber)+'?',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 40, color: Colors.white,fontWeight: FontWeight.bold),
                 ),

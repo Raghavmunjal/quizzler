@@ -29,4 +29,11 @@ class QuizBrain{
         true),
   ];
 
+  String getQuestionText(int quesNumber){
+    return questionBank[quesNumber].questionText;
+  }
+  bool getQuestionAnswer(int quesNumber){
+    return questionBank[quesNumber].questionAnswer;
+  }
+
 }
